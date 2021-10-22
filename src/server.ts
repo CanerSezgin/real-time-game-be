@@ -1,15 +1,11 @@
-const express = require('app');
-const { createServer } = require('http');
-const { Server } = require('socket.io');
+import { createServer } from 'http';
+import app from './app';
+import { initSocket } from './socket';
 
-const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  /* options */
-});
+const port = process.env.PORT || 4000;
 
-io.on('connection', (socket) => {
-  console.log('connection event', socket);
-});
+export const httpServer = createServer(app);
 
-httpServer.listen(3000);
+initSocket(httpServer);
+
+httpServer.listen(port, () => console.log(`Listening on port ${port}`));
