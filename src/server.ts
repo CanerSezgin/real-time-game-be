@@ -1,11 +1,17 @@
+import { hostname } from 'os';
 import { createServer } from 'http';
 import app from './app';
 import { initSocket } from './socket';
-
-const port = process.env.PORT || 4000;
+import { config } from './config';
 
 export const httpServer = createServer(app);
 
 initSocket(httpServer);
 
-httpServer.listen(port, () => console.log(`Listening on port ${port}`));
+httpServer.listen(config.port, () =>
+  console.log(
+    `✓ SERVER: Listening at http://${hostname()}:${config.port} in ${
+      config.env
+    } environment.`
+  )
+);
