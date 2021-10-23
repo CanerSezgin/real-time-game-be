@@ -3,7 +3,6 @@ import IRound from '../entities/interfaces/round';
 import GameSelection from '../entities/types/GameSelection';
 
 class Round implements IRound {
-  public status = 'pending';
   public selection: GameSelection | null = null;
   public finalNo: number | null = null;
 

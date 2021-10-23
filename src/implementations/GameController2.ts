@@ -8,18 +8,30 @@ import GameSelection from '../entities/types/GameSelection';
 export class GameTable {
   id: string = generateUniqueId('GM-');
   p2Id: string | null = null;
-  rounds: Round[] = [];
   status: GameStatus = GameStatus.PENDING;
   winner: Player['id'] | null = null;
   resultMessage: string = '';
+  createdAt: Date;
 
-  constructor(public p1Id: Player['id'], public initNo: number) {}
+  constructor(public p1Id: Player['id'], public initNo: number) {
+    this.createdAt = new Date();
+  }
   updateStatus(status: GameStatus): void {
     this.status = status;
   }
   assignP2Id(pId: Player['id']): void {
     this.p2Id = pId;
   }
+
+  sitP1Seat(pId: Player['id']): void {
+    if (this.p1Id) throw Error('P1 Seat is occupied.');
+    this.p1Id = pId;
+  }
+  sitP2Seat(pId: Player['id']): void {
+    if (this.p1Id) throw Error('P2 Seat is occupied.');
+    this.p2Id = pId;
+  }
+
   saveGameResult(winner: Player['id'], resultMessage: string): void {
     this.winner = winner;
     this.resultMessage = resultMessage;
@@ -54,17 +66,17 @@ export class RoundCtrl {
 }
 
 export class GameController {
+  private startAt: Date;
+  private endAt: Date | null = null;
+
   constructor(
     private gameTable: GameTable,
     private roundCtrl: RoundCtrl,
     p2Id: Player['id']
   ) {
-    this.createGame(p2Id);
-  }
-
-  private createGame(p2Id: Player['id']) {
     this.gameTable.assignP2Id(p2Id);
     this.createNextRound();
+    this.startAt = new Date();
   }
 
   createNextRound() {
@@ -124,6 +136,7 @@ export class GameController {
 
   finishGame(winner: Player['id'], resultMessage: string) {
     this.gameTable.saveGameResult(winner, resultMessage);
+    this.endAt = new Date();
   }
 
   get rounds() {
@@ -131,11 +144,16 @@ export class GameController {
   }
 
   get game() {
-    return this.gameTable;
+    return {
+      ...this.gameTable,
+      rounds: this.rounds,
+      startAt: this.startAt,
+      endAt: this.endAt,
+    };
   }
 }
 
-const gameCtrl = new GameController(
+/* const gameCtrl = new GameController(
   new GameTable('p1:123', 38),
   new RoundCtrl(),
   'p2:456'
@@ -148,7 +166,12 @@ gameCtrl.checkRoundResult();
 console.log(gameCtrl.rounds);
 console.log(gameCtrl.game);
 
-gameCtrl.select(GameSelection.increase);
+gameCtrl.select(GameSelection.decrease);
 gameCtrl.checkRoundResult();
 console.log(gameCtrl.rounds);
 console.log(gameCtrl.game);
+
+gameCtrl.select(GameSelection.decrease);
+gameCtrl.checkRoundResult();
+console.log(gameCtrl.rounds);
+console.log(gameCtrl.game); */
