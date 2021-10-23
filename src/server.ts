@@ -1,7 +1,7 @@
 import { hostname } from 'os';
 import { createServer } from 'http';
 import app from './app';
-import { initSocket } from './socket';
+import { initSocket } from './drivers/socket';
 import { config } from './config';
 
 export const httpServer = createServer(app);
