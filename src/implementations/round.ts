@@ -2,9 +2,11 @@ import Player from '../entities/types/Player';
 import IRound from '../entities/interfaces/round';
 import GameSelection from '../entities/types/GameSelection';
 
+type Nullable<T> = T | undefined | null;
+
 class Round implements IRound {
-  public selection: GameSelection | null = null;
-  public finalNo: number | null = null;
+  public selection: Nullable<GameSelection>;
+  public finalNo: Nullable<number>;
 
   constructor(
     public readonly id: number,
@@ -18,7 +20,7 @@ class Round implements IRound {
   }
 
   get isFinished() {
-    return !!this.selection;
+    return this.selection != null;
   }
 }
 

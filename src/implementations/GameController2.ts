@@ -7,13 +7,15 @@ import GameSelection from '../entities/types/GameSelection';
 
 export class GameTable {
   id: string = generateUniqueId('GM-');
-  p2Id: string | null = null;
+  p1Id: Player['id'] | null = null;
+  p2Id: Player['id'] | null = null;
+  initNo: number | null = null;
   status: GameStatus = GameStatus.PENDING;
   winner: Player['id'] | null = null;
   resultMessage: string = '';
   createdAt: Date;
 
-  constructor(public p1Id: Player['id'], public initNo: number) {
+  constructor() {
     this.createdAt = new Date();
   }
   updateStatus(status: GameStatus): void {
@@ -39,16 +41,12 @@ export class GameTable {
   }
 }
 
-export class RoundCtrl {
+export class RoundController {
   private rounds: Round[] = [];
-
-  insertRound(round: Round): void {
-    this.rounds.push(round);
-  }
 
   createRound(startNo: number, playerId: Player['id']) {
     const round = new Round(this.noOfRounds + 1, startNo, playerId);
-    this.insertRound(round);
+    this.rounds.push(round);
     return round;
   }
 
@@ -71,7 +69,7 @@ export class GameController {
 
   constructor(
     private gameTable: GameTable,
-    private roundCtrl: RoundCtrl,
+    private RoundController: RoundController,
     p2Id: Player['id']
   ) {
     this.gameTable.assignP2Id(p2Id);
@@ -80,13 +78,13 @@ export class GameController {
   }
 
   createNextRound() {
-    const currentRound = this.roundCtrl.currentRound;
+    const currentRound = this.RoundController.currentRound;
 
     if (!currentRound) {
       // Create First Round
-      return this.roundCtrl.createRound(
-        this.gameTable.initNo,
-        this.gameTable.p1Id
+      return this.RoundController.createRound(
+        this.gameTable.initNo!,
+        this.gameTable.p1Id!
       );
     } else {
       if (!currentRound.finalNo) {
@@ -95,39 +93,39 @@ export class GameController {
         );
       }
 
-      return this.roundCtrl.createRound(
+      return this.RoundController.createRound(
         currentRound.finalNo,
-        this.getOpponentIdOfCurrentRound()
+        this.getOpponentIdOfCurrentRound()!
       );
     }
   }
 
   select(selection: GameSelection) {
-    const currentRound = this.roundCtrl.currentRound!;
+    const currentRound = this.RoundController.currentRound!;
     const { startNo } = currentRound;
     const finalNo = (startNo + selection) / 3;
     currentRound.saveResults(selection, finalNo);
   }
 
   getOpponentIdOfCurrentRound() {
-    const currentRound = this.roundCtrl.currentRound!;
+    const currentRound = this.RoundController.currentRound!;
     return currentRound.playerId === this.gameTable.p1Id
       ? this.gameTable.p2Id!
       : this.gameTable.p1Id;
   }
 
   checkRoundResult() {
-    const currentRound = this.roundCtrl.currentRound!;
+    const currentRound = this.RoundController.currentRound!;
     const finalNo = currentRound.finalNo!;
     const opponentId = this.getOpponentIdOfCurrentRound();
 
     if (!Number.isInteger(finalNo)) {
-      const msg = `Player (${currentRound.playerId}) selected wrong option. Player (${opponentId}) won the game in Round: ${this.roundCtrl.noOfRounds}`;
-      return this.finishGame(opponentId, msg);
+      const msg = `Player (${currentRound.playerId}) selected wrong option. Player (${opponentId}) won the game in Round: ${this.RoundController.noOfRounds}`;
+      return this.finishGame(opponentId!, msg);
     }
 
     if (finalNo === 1) {
-      const msg = `Player (${currentRound.playerId}) won the game by reaching to 1 after ${this.roundCtrl.noOfRounds} rounds.`;
+      const msg = `Player (${currentRound.playerId}) won the game by reaching to 1 after ${this.RoundController.noOfRounds} rounds.`;
       return this.finishGame(currentRound.playerId, msg);
     }
 
@@ -140,7 +138,7 @@ export class GameController {
   }
 
   get rounds() {
-    return this.roundCtrl.allRounds;
+    return this.RoundController.allRounds;
   }
 
   get game() {
@@ -155,7 +153,7 @@ export class GameController {
 
 /* const gameCtrl = new GameController(
   new GameTable('p1:123', 38),
-  new RoundCtrl(),
+  new RoundController(),
   'p2:456'
 );
 
