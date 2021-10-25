@@ -1,6 +1,6 @@
 enum GameStatus {
-  PENDING = "pending",
-  ACTIVE = "active", 
-  FINISHED = "finished",
+  PENDING = 'pending',
+  ACTIVE = 'active', 
+  FINISHED = 'finished',
 }
-export default GameStatus;
+export default GameStatus

@@ -4,4 +4,4 @@ enum GameSelection {
   decrease = -1,
 }
 
-export default GameSelection;
+export default GameSelection

@@ -1,12 +1,12 @@
-import { hostname } from 'os';
-import { createServer } from 'http';
-import app from './app';
-import { initSocket } from './drivers/socket';
-import { config } from './config';
+import { hostname } from 'os'
+import { createServer } from 'http'
+import app from './app'
+import { initSocket } from './drivers/socket'
+import { config } from './config'
 
-export const httpServer = createServer(app);
+export const httpServer = createServer(app)
 
-initSocket(httpServer);
+initSocket(httpServer)
 
 httpServer.listen(config.port, () =>
   console.log(
@@ -14,4 +14,4 @@ httpServer.listen(config.port, () =>
       config.env
     } environment.`
   )
-);
+)

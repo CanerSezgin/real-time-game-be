@@ -1,7 +1,7 @@
 import CustomError from './custom-error'
 
 export default class ValidationError extends CustomError {
-  statusCode = 422;
+  statusCode = 422
 
   constructor(message: string) {
     super(message)
@@ -9,5 +9,5 @@ export default class ValidationError extends CustomError {
     Object.setPrototypeOf(this, ValidationError.prototype)
   }
 
-  serializeErrors = () => [{ message: this.message }];
+  serializeErrors = () => [{ message: this.message }]
 }

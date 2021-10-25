@@ -1,2 +1,2 @@
 type Nullable<T> = T | undefined | null;
-export default Nullable;
+export default Nullable

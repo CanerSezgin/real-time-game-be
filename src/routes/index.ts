@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import { config } from '../config';
+import { Router } from 'express'
+import { config } from '../config'
 
 // Routes
-import gamesRoute from './games.route';
+import gamesRoute from './games.route'
 
 interface Route {
   path: string;
@@ -10,17 +10,17 @@ interface Route {
   middlewares?: { (): void }[];
 }
 
-const router = Router();
+const router = Router()
 
 const setRoutes = (routes: Route[]) => {
   routes.forEach((route) => {
     if (Array.isArray(route.middlewares) && route.middlewares.length) {
-      router.use(route.path, ...route.middlewares, route.route);
+      router.use(route.path, ...route.middlewares, route.route)
     } else {
-      router.use(route.path, route.route);
+      router.use(route.path, route.route)
     }
-  });
-};
+  })
+}
 
 const defaultRoutes: Route[] = [
   {
@@ -32,14 +32,14 @@ const defaultRoutes: Route[] = [
     route: routeFile,
     middlewares: [middleware],
   }, */
-];
+]
 
-const devRoutes: Route[] = [];
+const devRoutes: Route[] = []
 
-setRoutes(defaultRoutes);
+setRoutes(defaultRoutes)
 
 if (config.meta.isDev) {
-  setRoutes(devRoutes);
+  setRoutes(devRoutes)
 }
 
-export default router;
+export default router

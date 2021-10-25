@@ -1,30 +1,29 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from 'express'
 
-import NotFoundError from '../utils/errors/not-found-error';
-import ValidationError from '../utils/errors/validation-error';
+import ValidationError from '../utils/errors/validation-error'
 
-import { gameService } from '../services/Games';
+import { gameService } from '../services/game'
 
-const router = express.Router();
+const router = express.Router()
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const games = await gameService.getAllGames();
-    res.status(200).json({ games: games.map((game) => game.gameCtrl.details) });
+    const games = await gameService.getAllGames()
+    res.status(200).json({ games: games.map((game) => game.instance) })
   } catch (error) {
-    next(error);
+    next(error)
   }
-});
+})
 
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
+  const { id } = req.params
   try {
-    const game = await gameService.getGameById(id);
-    res.status(200).json({ game: game.gameCtrl.details });
+    const game = await gameService.getGameById(id)
+    res.status(200).json({ game: game.instance })
   } catch (error) {
-    next(error);
+    next(error)
   }
-});
+})
 
 router.post(
   '/join',
@@ -41,18 +40,18 @@ router.post(
      * const token = authHeader && authHeader.split(' ')[1]
      * verify token --> get playerId
      */
-    const { playerId } = req.body;
+    const { playerId } = req.body
 
     try {
-      if (!playerId) throw new ValidationError('Player Id missing.');
+      if (!playerId) throw new ValidationError('Player Id missing.')
 
-      const game = await gameService.joinGame(playerId);
+      const game = await gameService.joinGame(playerId)
 
-      res.status(200).json({ game: game.gameCtrl.details });
+      res.status(200).json({ game: game.instance })
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
-);
+)
 
-export default router;
+export default router

@@ -1,37 +1,39 @@
-import Player from '../../entities/types/Player';
-import Round from './Round';
+import Player from '../../entities/types/Player'
+import Round from './Round'
+import IRound from '../../entities/interfaces/round'
+import Nullable from '../../entities/types/Nullable'
 
 export default class RoundController {
-  private rounds: Round[] = [];
+  private rounds: Round[] = []
 
   createRound(startNo: number, playerId: Player['id']) {
-    const round = new Round(this.noOfRounds + 1, startNo, playerId);
-    this.rounds.push(round);
-    return round;
+    const round = new Round(this.noOfRounds + 1, startNo, playerId)
+    this.rounds.push(round)
+    return round
   }
 
   get allRounds() {
-    return this.rounds;
+    return this.rounds
   }
 
-  get currentRound(): Round | null {
-    return this.rounds[this.noOfRounds - 1] || null;
+  get currentRound(): Nullable<IRound> {
+    return this.rounds[this.noOfRounds - 1] || null
   }
 
   get noOfRounds() {
-    return this.rounds.length;
+    return this.rounds.length
   }
 
   get playingPlayer() {
     return this.currentRound && !this.currentRound.isFinished
       ? this.currentRound.playerId
-      : null;
+      : null
   }
 
   get currentNo() {
-    if (!this.currentRound) return null;
+    if (!this.currentRound) return null
     return this.currentRound.isFinished && this.currentRound.finalNo === 1
       ? this.currentRound.finalNo
-      : this.currentRound.startNo;
+      : this.currentRound.startNo
   }
 }
