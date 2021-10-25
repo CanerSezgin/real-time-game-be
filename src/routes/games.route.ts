@@ -9,9 +9,8 @@ const router = express.Router();
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res
-      .status(200)
-      .json({ games: gameService.games.map((game) => game.gameCtrl.details) });
+    const games = await gameService.getAllGames();
+    res.status(200).json({ games: games.map((game) => game.gameCtrl.details) });
   } catch (error) {
     next(error);
   }
@@ -20,8 +19,7 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
   try {
-    const game = gameService.getGameById(id);
-    if (!game) throw new NotFoundError(`Game Not Found with ID: ${id}`);
+    const game = await gameService.getGameById(id);
     res.status(200).json({ game: game.gameCtrl.details });
   } catch (error) {
     next(error);
@@ -48,7 +46,7 @@ router.post(
     try {
       if (!playerId) throw new ValidationError('Player Id missing.');
 
-      const game = gameService.joinGame(playerId);
+      const game = await gameService.joinGame(playerId);
 
       res.status(200).json({ game: game.gameCtrl.details });
     } catch (error) {

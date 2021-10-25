@@ -1,11 +1,7 @@
-import Game from '../types/Game';
 import Player from '../types/Player';
 
-export default interface IGameRepository {
-  getAllGames(): Promise<Game[]>;
-  getActiveGames(): Promise<Game[]>;
-  getPendingGames(): Promise<Game[]>;
-  getGamesByPlayerId(playerId: Player['id']): Promise<Game[]>;
-  getByGameId(gameId: Game['id']): Promise<Game | null>;
-  create(p1Id: Player['id'], initNo: number): Promise<Game>;
+export default interface IGameRepository<GameType> {
+  getAllGames(): Promise<GameType[]>;
+  getGameById(id: string): Promise<GameType>;
+  joinGame(playerId: Player['id']): Promise<GameType>;
 }

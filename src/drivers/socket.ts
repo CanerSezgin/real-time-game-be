@@ -1,13 +1,10 @@
 import SocketIO from 'socket.io';
 import { Server } from 'http';
 
-import MemoryGameRepository from '../implementations/gameRepository/MemoryGameRepository';
 import GameSelection from '../entities/types/GameSelection';
 
 import { gameService } from '../services/Games';
 import Player from '../entities/types/Player';
-
-const gameRepo = new MemoryGameRepository();
 
 export const initSocket = (httpServer: Server): void => {
   const io = new SocketIO.Server(httpServer, {
@@ -19,24 +16,25 @@ export const initSocket = (httpServer: Server): void => {
   io.on('connection', async (socket) => {
     console.log('New client connected', socket.id);
 
-    socket.on('join', (gameId) => {
+    socket.on('join', async (gameId) => {
       console.log('joining', gameId);
-      const game = gameService.getGameById(gameId);
+      const game = await gameService.getGameById(gameId);
 
-      if (game) {
-        socket.join(gameId);
-        io.in(gameId).emit('get-game', game.gameCtrl.details);
-      }
+      socket.join(gameId);
+      io.in(gameId).emit('get-game', game.gameCtrl.details);
     });
 
     socket.on(
       'play-game',
       async (gameId, selection: GameSelection, playerId: Player['id']) => {
-        const game = gameService.getGameById(gameId);
+        const game = await gameService.getGameById(gameId);
 
-        if (game && game.players.includes(playerId)) {
+        const isPlayerValid = game.gameCtrl.playingPlayerValidation(playerId);
+        if (isPlayerValid) {
           game.play(selection);
           io.in(gameId).emit('get-game', game.gameCtrl.details);
+        } else {
+          console.log('Invalid playerId is trying to play.');
         }
       }
     );

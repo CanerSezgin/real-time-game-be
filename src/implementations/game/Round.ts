@@ -1,10 +1,9 @@
-import Player from '../entities/types/Player';
-import IRound from '../entities/interfaces/round';
-import GameSelection from '../entities/types/GameSelection';
+import Player from '../../entities/types/Player';
+import IRound from '../../entities/interfaces/round';
+import GameSelection from '../../entities/types/GameSelection';
+import Nullable from '../../entities/types/Nullable';
 
-type Nullable<T> = T | undefined | null;
-
-class Round implements IRound {
+export default class Round implements IRound {
   public selection: Nullable<GameSelection>;
   public finalNo: Nullable<number>;
 
@@ -23,5 +22,3 @@ class Round implements IRound {
     return this.selection != null;
   }
 }
-
-export default Round;
