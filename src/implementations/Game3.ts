@@ -111,6 +111,18 @@ class GameController3 {
   get rounds() {
     return this.roundCtrl.allRounds;
   }
+
+  get details() {
+    return {
+      id: this.game.id,
+      players: this.game.players,
+      rounds: this.rounds,
+      status: this.game.status,
+      playing: this.roundCtrl.playingPlayer,
+      number: this.roundCtrl.currentNo,
+      winner: this.game.winner
+    };
+  }
 }
 
 export class Game {

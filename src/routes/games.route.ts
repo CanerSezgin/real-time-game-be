@@ -1,40 +1,17 @@
 import express, { Request, Response, NextFunction } from 'express';
-import Player from '../entities/types/Player';
-import { Game, GameWithState } from '../implementations/Game3';
+
 import NotFoundError from '../utils/errors/not-found-error';
 import ValidationError from '../utils/errors/validation-error';
 
+import { gameService } from '../services/Games';
+
 const router = express.Router();
-
-class Games {
-  games: GameWithState[] = [];
-
-  getGameById(id: Game['id']) {
-    return this.games.find((game) => game.id === id);
-  }
-
-  joinGame(playerId: Player['id']) {
-    const game = this.getAPendingGame() || this.createAGame();
-    game.joinGame(playerId);
-    return game;
-  }
-
-  private createAGame() {
-    const game = new GameWithState();
-    this.games.push(game);
-    return game;
-  }
-
-  private getAPendingGame() {
-    return this.games.find((game) => game.isPending);
-  }
-}
-
-const games = new Games();
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.status(200).json({ games: games.games });
+    res
+      .status(200)
+      .json({ games: gameService.games.map((game) => game.gameCtrl.details) });
   } catch (error) {
     next(error);
   }
@@ -43,9 +20,9 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
   try {
-    const game = games.getGameById(id);
+    const game = gameService.getGameById(id);
     if (!game) throw new NotFoundError(`Game Not Found with ID: ${id}`);
-    res.status(200).json({ game });
+    res.status(200).json({ game: game.gameCtrl.details });
   } catch (error) {
     next(error);
   }
@@ -71,9 +48,9 @@ router.post(
     try {
       if (!playerId) throw new ValidationError('Player Id missing.');
 
-      const game = games.joinGame(playerId);
+      const game = gameService.joinGame(playerId);
 
-      res.status(200).json({ game });
+      res.status(200).json({ game: game.gameCtrl.details });
     } catch (error) {
       next(error);
     }

@@ -61,6 +61,19 @@ export class RoundController {
   get noOfRounds() {
     return this.rounds.length;
   }
+
+  get playingPlayer() {
+    return this.currentRound && !this.currentRound.isFinished
+      ? this.currentRound.playerId
+      : null;
+  }
+
+  get currentNo() {
+    if (!this.currentRound) return null;
+    return this.currentRound.isFinished && this.currentRound.finalNo === 1
+      ? this.currentRound.finalNo
+      : this.currentRound.startNo;
+  }
 }
 
 export class GameController {
