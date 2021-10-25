@@ -49,3 +49,5 @@ In default `Backend` runs at `http://localhost:4000`, `Frontend` runs at `http:/
 - For the sake of simplicity, for game creation and storing games I am using `memory`. Which means when the server is reseted, all stored data will be lost. 
 
 In order to persist data, it requires database implementation and it can be done without changing, the only thing that needs to be done is creating another `gameRepository implementation` which implements `IGameRepository`.
+
+![High Level of Game Business Logic](./img/high_level.png)
